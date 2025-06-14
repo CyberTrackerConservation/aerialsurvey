@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
+import QtPositioning
 import CyberTracker
 
 ColumnLayout {
@@ -12,6 +13,13 @@ ColumnLayout {
     property var params
 
     property string collectRecordUid: form.getGlobal("collectRecordUid", root.recordUid)
+
+    PositionSource {
+        id: positionSource
+        active: true
+        name: App.positionInfoSourceName
+        updateInterval: 1000
+    }
 
     spacing: 0
 
@@ -90,7 +98,7 @@ ColumnLayout {
                 horizontalAlignment: Qt.AlignHCenter
                 clip: true
                 color: h.textColor
-                text: "Mission: " + form.getFieldDisplayValue(root.recordUid, "mission_id")
+                text: form.getFieldDisplayValue(root.recordUid, "mission_id")
             }
 
             RowLayout {
@@ -147,6 +155,12 @@ ColumnLayout {
         id: bindLocation
         recordUid: root.collectRecordUid
         fieldUid: "location"
+    }
+
+    FieldBinding {
+        id: bindProtocol
+        recordUid: root.collectRecordUid
+        fieldUid: "protocol"
     }
 
     FieldBinding {
@@ -280,7 +294,7 @@ ColumnLayout {
         ColumnLayout {
             Layout.maximumWidth: App.scaleByFontSize(52) * 3
             Layout.fillHeight: true
-            spacing: App.scaleByFontSize(4)
+            spacing: 0
 
             Row {
                 Layout.fillWidth: true
@@ -290,15 +304,34 @@ ColumnLayout {
                     id: buttonGroupMeasureType
                 }
 
+                Rectangle {
+                    visible: bindProtocol.value === "protocol/recce"
+                    width: parent.width
+                    height: saveButton.height
+                    Material.background: "transparent"
+                    Material.roundedScale: Material.NotRounded
+                    enabled: false
+                    color: "transparent"
+
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: form.getElementName("measure_type/count")
+                        font.pixelSize: App.settings.font14
+                    }
+                }
+
                 Repeater {
+                    id: measureType
                     model: modelMeasureType
+                    visible: bindProtocol.value !== "protocol/recce"
 
                     Button {
                         width: parent.width / modelMeasureType.count
                         ButtonGroup.group: buttonGroupMeasureType
                         Material.background: checked ? Material.accent : "transparent"
                         Material.roundedScale: Material.NotRounded
-                        //checkable: true
                         contentItem: Text {
                             anchors.fill: parent
                             horizontalAlignment: Text.AlignHCenter
@@ -400,66 +433,77 @@ ColumnLayout {
                 Material.roundedScale: Material.NotRounded
                 icon.source: "qrc:/icons/save.svg"
                 onClicked: {
-                    if (!form.getRecordValid(root.collectRecordUid)) {
-                        App.showError("Not complete")
-                        return
+                    try {
+                        // Recce type must be a count.
+                        if (bindProtocol.value === "protocol/recce") {
+                            bindMeasureType.setValue("measure_type/count")
+                        }
+
+                        // Ensure record is valid.
+                        if (!form.getRecordValid(root.collectRecordUid)) {
+                            App.showError("Not complete")
+                            return
+                        }
+
+                        // Ensure values.
+                        if (bindCategory.isEmpty) {
+                            App.showError("No category")
+                            return
+                        }
+
+                        if (bindType.isEmpty) {
+                            App.showError("No type")
+                            return
+                        }
+
+                        if (bindMeasureType.isEmpty) {
+                            App.showError("No measure type")
+                            return
+                        }
+
+                        if (bindMeasure.isEmpty) {
+                            App.showError("No measure")
+                            return
+                        }
+
+                        if (bindInOut.isEmpty) {
+                            App.showError("No in/out specified")
+                            return
+                        }
+
+                        if (bindDirection.isEmpty) {
+                            App.showError("No direction specified")
+                            return
+                        }
+
+                        // Save sighting.
+                        form.setFieldValue(root.collectRecordUid, "datetime", App.timeManager.currentDateTimeISO())
+                        form.setFieldValue(root.collectRecordUid, "type", "")
+                        form.saveSighting()
+                        form.markSightingCompleted()
+
+                        // New sighting.
+                        form.newSighting(true)
+                        form.setGlobal("collectRecordUid", form.rootRecordUid)
+                        root.collectRecordUid = form.rootRecordUid
+
+                        bindLocation.resetValue()
+
+                        let lastCategory = bindCategory.value
+                        bindCategory.resetValue()
+                        bindCategory.setValue(lastCategory)
+
+                        bindMeasureType.resetValue()
+                        bindMeasure.resetValue()
+                        bindInOut.resetValue()
+
+                        keypad.updateDisplay()
+
+                        updateTitle()
+
+                    } finally {
+                        bindDirection.resetValue()
                     }
-
-                    if (bindCategory.isEmpty) {
-                        App.showError("No category")
-                        return
-                    }
-
-                    if (bindType.isEmpty) {
-                        App.showError("No type")
-                        return
-                    }
-
-                    if (bindMeasureType.isEmpty) {
-                        App.showError("No measure type")
-                        return
-                    }
-
-                    if (bindMeasure.isEmpty) {
-                        App.showError("No measure")
-                        return
-                    }
-
-                    if (bindInOut.isEmpty) {
-                        App.showError("No in/out specified")
-                        return
-                    }
-
-                    if (bindDirection.isEmpty) {
-                        App.showError("No direction specified")
-                        return
-                    }
-
-                    // Save sighting.
-                    form.setFieldValue(root.collectRecordUid, "datetime", App.timeManager.currentDateTimeISO())
-                    form.setFieldValue(root.collectRecordUid, "type", "")
-                    form.saveSighting()
-                    form.markSightingCompleted()
-
-                    // New sighting.
-                    form.newSighting(true)
-                    form.setGlobal("collectRecordUid", form.rootRecordUid)
-                    root.collectRecordUid = form.rootRecordUid
-
-                    bindLocation.resetValue()
-
-                    let lastCategory = bindCategory.value
-                    bindCategory.resetValue()
-                    bindCategory.setValue(lastCategory)
-
-                    bindMeasureType.resetValue()
-                    bindMeasure.resetValue()
-                    bindInOut.resetValue()
-                    bindDirection.resetValue()
-
-                    keypad.updateDisplay()
-
-                    updateTitle()
                 }
             }
 

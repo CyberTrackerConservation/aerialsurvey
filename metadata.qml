@@ -96,7 +96,7 @@ Item {
                         const month = monthNames[date.getMonth()]
                         const year = date.getFullYear()
 
-                        let site = form.getFieldValue(root.recordUid, "site")
+                        let site = form.getFieldValue(root.recordUid, "site", "")
                         const sitePrefix = site.length < 3 ? site : site.substring(0, 3)
 
                         let mission_id = `${day}${month}${year}${sitePrefix}`
