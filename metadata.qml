@@ -117,6 +117,8 @@ Item {
                     // New sighting.
                     form.newSighting(true)
                     form.setGlobal("collectRecordUid", form.rootRecordUid)
+                    form.setGlobal("editing", false)
+                    form.setGlobal("canEdit", false)
                     form.wizard.skip("observation_category")
                 }
             }

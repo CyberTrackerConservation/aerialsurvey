@@ -13,12 +13,18 @@ ColumnLayout {
     property var params
 
     property string collectRecordUid: form.getGlobal("collectRecordUid", root.recordUid)
+    property bool canEdit: form.getGlobal("canEdit", false)
+    property bool editing: form.getGlobal("editing", false)
 
     PositionSource {
         id: positionSource
         active: true
         name: App.positionInfoSourceName
         updateInterval: 1000
+    }
+
+    SightingListModel {
+        id: sightingListModel
     }
 
     spacing: 0
@@ -39,7 +45,47 @@ ColumnLayout {
 
         RowLayout {
             width: parent.width
+            height: parent.height
             spacing: 0
+            visible: root.editing
+
+            ToolButton {
+                Layout.alignment: Qt.AlignVCenter
+                icon.source: Style.cancelIconSource
+                icon.width: Style.toolButtonSize
+                icon.height: Style.toolButtonSize
+                icon.color: h.textColor
+                onClicked: {
+                    root.cancelEdit()
+                }
+            }
+
+            Label {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                Layout.fillWidth: true
+                font.pixelSize: App.settings.font20
+                horizontalAlignment: Qt.AlignHCenter
+                clip: true
+                color: h.textColor
+                text: form.getFieldDisplayValue(root.recordUid, "mission_id") + " (edit)"
+            }
+
+            ToolButton {
+                Layout.alignment: Qt.AlignVCenter
+                icon.source: Style.okIconSource
+                icon.width: Style.toolButtonSize
+                icon.height: Style.toolButtonSize
+                icon.color: h.textColor
+                onClicked: {
+                    root.confirmEdit()
+                }
+            }
+        }
+
+        RowLayout {
+            width: parent.width
+            spacing: 0
+            visible: !root.editing
 
             RowLayout {
                 Layout.preferredWidth: Style.toolButtonSize * 4
@@ -285,8 +331,12 @@ ColumnLayout {
             params: updateParams()
 
             onItemClicked: (elementUid) => {
+                // Do not set the location for edited sightings.
+                if (!root.editing) {
+                    bindLocation.setValue(App.lastLocation.toMap)
+                }
+
                 bindType.setValue(elementUid)
-                bindLocation.setValue(App.lastLocation.toMap)
                 updateTitle()
             }
         }
@@ -307,7 +357,7 @@ ColumnLayout {
                 Rectangle {
                     visible: bindProtocol.value === "protocol/recce"
                     width: parent.width
-                    height: saveButton.height
+                    height: editButton.height
                     Material.background: "transparent"
                     Material.roundedScale: Material.NotRounded
                     enabled: false
@@ -332,6 +382,7 @@ ColumnLayout {
                         ButtonGroup.group: buttonGroupMeasureType
                         Material.background: checked ? Material.accent : "transparent"
                         Material.roundedScale: Material.NotRounded
+
                         contentItem: Text {
                             anchors.fill: parent
                             horizontalAlignment: Text.AlignHCenter
@@ -419,90 +470,11 @@ ColumnLayout {
                         checked: bindDirection.value === modelData.uid
                         onClicked: {
                             bindDirection.setValue(modelData.uid)
-                            saveButton.clicked()
+
+                            if (!root.editing) {
+                                root.saveSighting()
+                            }
                         }
-                    }
-                }
-            }
-
-            Button {
-                id: saveButton
-                Layout.fillWidth: true
-                visible: false
-
-                Material.roundedScale: Material.NotRounded
-                icon.source: "qrc:/icons/save.svg"
-                onClicked: {
-                    try {
-                        // Recce type must be a count.
-                        if (bindProtocol.value === "protocol/recce") {
-                            bindMeasureType.setValue("measure_type/count")
-                        }
-
-                        // Ensure record is valid.
-                        if (!form.getRecordValid(root.collectRecordUid)) {
-                            App.showError("Not complete")
-                            return
-                        }
-
-                        // Ensure values.
-                        if (bindCategory.isEmpty) {
-                            App.showError("No category")
-                            return
-                        }
-
-                        if (bindType.isEmpty) {
-                            App.showError("No type")
-                            return
-                        }
-
-                        if (bindMeasureType.isEmpty) {
-                            App.showError("No measure type")
-                            return
-                        }
-
-                        if (bindMeasure.isEmpty) {
-                            App.showError("No measure")
-                            return
-                        }
-
-                        if (bindInOut.isEmpty) {
-                            App.showError("No in/out specified")
-                            return
-                        }
-
-                        if (bindDirection.isEmpty) {
-                            App.showError("No direction specified")
-                            return
-                        }
-
-                        // Save sighting.
-                        form.setFieldValue(root.collectRecordUid, "datetime", App.timeManager.currentDateTimeISO())
-                        form.setFieldValue(root.collectRecordUid, "type", "")
-                        form.saveSighting()
-                        form.markSightingCompleted()
-
-                        // New sighting.
-                        form.newSighting(true)
-                        form.setGlobal("collectRecordUid", form.rootRecordUid)
-                        root.collectRecordUid = form.rootRecordUid
-
-                        bindLocation.resetValue()
-
-                        let lastCategory = bindCategory.value
-                        bindCategory.resetValue()
-                        bindCategory.setValue(lastCategory)
-
-                        bindMeasureType.resetValue()
-                        bindMeasure.resetValue()
-                        bindInOut.resetValue()
-
-                        keypad.updateDisplay()
-
-                        updateTitle()
-
-                    } finally {
-                        bindDirection.resetValue()
                     }
                 }
             }
@@ -511,18 +483,24 @@ ColumnLayout {
                 Layout.fillHeight: true
             }
 
-            Rectangle {
+            Button {
+                id: editButton
                 Layout.fillWidth: true
-                height: Style.lineWidth1
-                color: Style.colorGroove
+                Material.roundedScale: Material.NotRounded
+                Material.background: Material.Red
+                visible: root.canEdit && !root.editing
+                contentItem: Text {
+                    width: parent.width
+                    horizontalAlignment: Qt.AlignHCenter
+                    font.pixelSize: App.settings.font14
+                    text: "Edit last"
+                    color: "white"
+                }
+
+                onClicked: {
+                    root.startEdit()
+                }
             }
-
-        }
-
-        Rectangle {
-            width: Style.lineWidth1
-            height: parent.height
-            color: Style.colorGroove
         }
     }
 
@@ -742,5 +720,88 @@ ColumnLayout {
         result.padding = getPadding()
 
         return result
+    }
+
+    function newSighting() {
+        let fieldUids = ["location", "observation_type", "measure_type", "measure", "in_out", "direction"]
+        for (let i = 0; i < fieldUids.length; i++) {
+            form.resetFieldValue(form.rootRecordUid, fieldUids[i])
+        }
+
+        form.newSighting(true)
+        form.setGlobal("collectRecordUid", form.rootRecordUid)
+        form.setGlobal("editing", false)
+
+        form.loadPages()
+        form.saveState()
+    }
+
+    function saveSighting() {
+        // Recce type must be a count.
+        if (bindProtocol.value === "protocol/recce") {
+            bindMeasureType.setValue("measure_type/count")
+        }
+
+        // Ensure record is valid.
+        let errorMessage = ""
+        if (!form.getRecordValid(root.collectRecordUid)) {
+            errorMessage = "Not complete"
+        } else if (bindCategory.isEmpty) {
+            errorMessage = "No category"
+        } else if (bindType.isEmpty) {
+            errorMessage = "No type"
+        } else if (bindMeasureType.isEmpty) {
+            errorMessage = "No measure type"
+        } else if (bindMeasure.isEmpty) {
+            errorMessage = "No measure"
+        } else if (bindInOut.isEmpty) {
+            errorMessage = "No in/out specified"
+        } else if (bindDirection.isEmpty) {
+            errorMessage = "No direction specified"
+        }
+
+        if (errorMessage !== "") {
+            bindDirection.resetValue()
+            App.showError(errorMessage)
+            return
+        }
+
+        // Save sighting.
+        form.setFieldValue(root.collectRecordUid, "datetime", App.timeManager.currentDateTimeISO())
+        form.setFieldValue(root.collectRecordUid, "type", "")
+        form.saveSighting()
+        form.markSightingCompleted()
+
+        // Specify that editing is now allowed.
+        form.setGlobal("canEdit", true)
+
+        // New sighting.
+        newSighting()
+    }
+
+    function startEdit() {
+        if (!form.getGlobal("canEdit", false)) {
+            App.showError("No editable data")
+            return
+        }
+
+        let sightingUid = sightingListModel.get(sightingListModel.count - 1).sightingUid
+        form.setGlobal("collectRecordUid", sightingUid)
+        form.setGlobal("editing", true)
+
+        form.loadSighting(sightingUid)
+        form.loadPages()
+
+        form.saveState()
+    }
+
+    function cancelEdit() {
+        newSighting()
+    }
+
+    function confirmEdit() {
+        form.saveSighting()
+        form.setGlobal("editing", false)
+        newSighting()
     }
 }
