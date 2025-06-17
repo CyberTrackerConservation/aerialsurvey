@@ -6,12 +6,11 @@ This is a data collection system designed for **aerial wildlife surveys**, where
 
 At its core, the system uses the [XlsForm](https://xlsform.org) standard, making it compatible with widely used data collection backends like [KoBoToolbox](https://kobotoolbox.org), [ODK](https://getodk.org), and [Survey123](http://survey123.arcgis.com/). Data collected via CyberTracker is stored in a standard XlsForm-compatible format, enabling easy integration with existing reporting workflows and dashboards.
 
-To enable the speed and flexibility required for aerial data collection, the XlsForm is extended with [CyberTracker-specific visual and interaction features](https://cybertrackerwiki.org/xlsform/). These include customized layouts, button-based entry, and touch-optimized interfaces that go beyond the standard capabilities of most form-based tools.
+To enable the speed and flexibility required for aerial data collection, the XlsForm is extended with [CyberTracker-specific visual and interaction features](https://cybertrackerwiki.org/xlsform/). This includes a custom layout which is optimized to make data entry efficient for this use case.
 
-> **Note:** While the data model is compatible with other platforms, **CyberTracker is required** on the mobile device to collect data using this system. It interprets the XlsForm with the embedded CyberTracker extensions, providing the necessary UI for field use.
+> **Note:** While the data model is compatible with other platforms, **CyberTracker is required** on the mobile device. It interprets the XlsForm with the embedded CyberTracker extensions, providing the necessary UI for field use.
 
 This repository contains everything needed to use the system:
-
 * The XlsForm survey, preconfigured for aerial data capture
 * Instructions for customizing specific parts of the form (e.g., observation types)
 * Setup guidance for installing the form on CyberTracker and integrating with a backend
@@ -19,10 +18,10 @@ This repository contains everything needed to use the system:
 ---
 
 ## Features
-This system is purpose-built for fast, accurate aerial data collection. It combines performance-focused design with support for standardized workflows, all while operating fully offline. Key features include:
+This system is purpose-built for fast, accurate aerial data collection. It supports an open standardized workflow and is designed to work completely offline. Key features include:
 
-### 1. Metadata Specification
-Before starting data collection, the user is prompted to enter **metadata** that is automatically attached to every observation. This includes:
+### 1. Metadata specification
+Before starting data collection, the user is prompted to enter **metadata** that is attached to every observation. This includes:
 * Aircraft registration
 * Pilot and observer names
 * Protocol
@@ -32,10 +31,10 @@ This ensures each dataset is tagged with essential context for quality control a
   <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;">
 </div>
 
-### 2. Rapid Icon-Based Entry
-The observation interface uses large, icon-driven buttons to represent standard observation protocols. This allows observers to:
+### 2. Rapid icon-based entry
+The main observation interface uses large icon buttons to represent data options. This allows observers to:
 * Quickly identify and tap the correct category or type
-* Minimize errors through visual recognition
+* Minimize errors through visual recognition and muscle-memory
 * Log observations with minimal attention diverted from the field
 * The icon layout can be customized for the specific device. This includes the number of icon columns as well as the icon sizes.
 
@@ -47,13 +46,11 @@ The observation interface uses large, icon-driven buttons to represent standard 
 Each observation is automatically stamped with the **current GPS location** the moment the user selects the type that was observed. This ensures positional accuracy even at high speeds.
 
 ### 4. Continuous Track Recording
-
 The GPS track is logged throughout the survey. This provides a full spatial trace of the flight path, which can be used for:
 * Contextualizing observations
 * Post-flight review
 * Spatial analysis and verification
-
-The track log is attached to the "Stop" record as a ZIP file. The ZIP contains a [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) file.
+The track log is attached to the "Stop" record as a ZIP file which contains a [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) file. This is an open format which is widely supported. 
 
 <div style="text-align: center;">
   <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect3.png" alt="Metadata entry" style="width: 50%;">
@@ -81,11 +78,9 @@ This supports seamless reporting, export, and analysis workflows across a wide r
 ---
 
 ## Hardware Requirements
-
 To ensure smooth operation in demanding field conditions, this system is designed to run on modern tablets that offer a balance of performance, screen size, and portability. While the CyberTracker app supports both Android and iOS devices, the following hardware guidelines are recommended for optimal use during aerial surveys.
 
 ### Recommended Specifications
-
 * **Device Type:** Tablet (Android or iOS)
 * **Minimum Display Resolution:** 1920×1200
   Higher resolutions improve visibility and ease of use with icon-based input.
@@ -99,11 +94,9 @@ To ensure smooth operation in demanding field conditions, this system is designe
   Offline maps, form files, and track logs can take up significant storage during extended use.
 
 ### Additional Recommendations
-
 * **Sunlight Readability:** Devices with high screen brightness or anti-reflective coatings are better suited for use in bright daylight conditions.
 * **Durability:** A rugged or shock-resistant case is advisable for airborne environments.
 * **Operating System:**
-
   * Android 9.0 (Pie) or later
   * iOS 13 or later
 
@@ -111,44 +104,36 @@ To ensure smooth operation in demanding field conditions, this system is designe
 
 ---
 
-## Installation and Setup
-
+## Installation and setup
 If the form has already been created and deployed to a backend (e.g., KoBoToolbox, ODK, or Survey123), getting started with data collection is simple. Just install CyberTracker on your mobile device and connect to your backend account.
 
 ### Step 1: Install CyberTracker
-
 Download and install the **CyberTracker mobile app**:
-
 * [CyberTracker on Google Play (Android)](https://play.google.com/store/apps/details?id=org.cybertracker.mobile)
 * [CyberTracker on the App Store (iOS)](https://apps.apple.com/us/app/cybertracker-mobile/id1582068361)
 
 Once installed, launch the app.
 
-### Step 2: Connect to Your Backend
-
+### Step 2: Connect to the backend
 CyberTracker supports connecting to major XlsForm-compatible platforms. The example below shows how to connect to [KoBoToolbox](https://kobotoolbox.org):
-
 1. Open CyberTracker and select the large "+" button in the lower right corner of the screen. Tap **KoBoToolbox**.
-2. Enter your login credentials.
-3. After logging in, CyberTracker will display a list of available forms.
-4. Select the form and tap to download it to your device.
+2. Enter your login credentials
+3. After logging in, CyberTracker will display a list of available forms
+4. Select the form and tap to download it to your device
 
 It may take a while to download, depending on how many icons are used and the speed of your internet connection.
 
-### Step 3: Begin Data Collection
-
+### Step 3: Begin data collection
 Once downloaded:
-
 * Tap the form to launch it
 * Enter the required metadata (e.g. aircraft, pilot, observers)
-* Begin logging observations in real time
+* Begin logging observations
 
 All data is stored locally on the device and can be uploaded when internet access is available.
 
 ---
 
-## Customizing and Deploying the Form
-
+## Customizing and deploying the form
 This section describes how to make limited customizations to the form (such as updating the list of employees or observation categories), regenerate the finalized form package, and deploy it to a backend like [KoBoToolbox](https://kobotoolbox.org).
 
 > ⚠️ **Important:** Most of the form should not be modified. Only the contents of the following lists are expected to change:
@@ -158,25 +143,17 @@ This section describes how to make limited customizations to the form (such as u
 
 ---
 
-### Part 1: Customizing the Form
-
+### Part 1: Customizing the form
 1. **Clone the repository** to your desktop computer:
-
    ```bash
    git clone https://github.com/CyberTrackerConservation/aerialsurvey.git
    cd aerialsurvey
    ```
-
 2. **Open `form.xlsx`** (located in the root of the repository) using a spreadsheet which supports Excel format.
-
 3. **Edit the `choices` sheet**, updating only the rows associated with the following list names:
-
    * `employee`: Add or remove team members as needed.
-
    * `observation_category`: Define the top-level groupings used in the interface.
-
    * `observation_type`: Add or adjust the specific items to be recorded under each category.
-
    > Refer to the [XlsForm documentation](https://xlsform.org) if you're unsure about how the format works.
 
    *Example:*
@@ -188,23 +165,19 @@ This section describes how to make limited customizations to the form (such as u
    | observation\_category | human\_activity | Human activity |
 
 4. **Build the finalized form** using the provided Python script:
-
    ```bash
    pip install openpyxl pyxform
    python make.py
    ```
 
 5. A `build` folder will be created containing:
-
    * The finalized `form.xlsx`
    * All media files referenced in the form (e.g., SVG icons)
 
 ---
 
-### Part 2: Deploying the Form to KoBoToolbox
-
+### Part 2: Deploying the form to KoBoToolbox
 Once your form has been customized and built, you can upload it to [KoBoToolbox](https://kobotoolbox.org) for hosting and data storage.
-
 1. **Sign in** to your account at [https://kobotoolbox.org](https://kobotoolbox.org). Create an account if you don’t already have one.
 2. **Create a new project**, then choose **Upload an XLSForm** when prompted.
 3. **Upload the finalized `form.xlsx`** file from the `build/` folder.
@@ -217,11 +190,11 @@ Once deployed, the form can be accessed and downloaded from the CyberTracker app
 
 ---
 
-## Field Use Workflow
+## Field use workflow
 
 This section outlines how to use the system during a typical aerial survey. It assumes the CyberTracker app has already been installed and connected to your backend (see [Installation and Setup](#installation-and-setup)).
 
-### Launching the Form
+### Launching the form
 1. Open the **CyberTracker** app on your device
 2. Tap the form to launch it
 3. Tap the "New survey" button in the lower right corner
@@ -235,7 +208,7 @@ This information will be attached to all observations recorded during the sessio
 
 When complete, tap the "Start survey" button in the lower right corner
 
-### Recording Observations
+### Recording observations
 Once the session begins, the app will display the **observation interface**, which includes:
 * A set of **large, icon-based buttons** grouped by category (e.g., Wildlife, Birds, Human Activity)
 * Touch-friendly layouts optimized for fast selection
@@ -265,7 +238,7 @@ This section addresses common questions and issues you may encounter when custom
 
 ---
 
-### I changed the `choices` sheet and now the form won’t build.
+### I changed the `choices` sheet and now the form won’t build
 
 * Check that:
   * You didn’t rename or delete any columns or sheets
@@ -275,7 +248,7 @@ This section addresses common questions and issues you may encounter when custom
 
 ---
 
-### My icon images don’t show up in CyberTracker.
+### My icon images don’t show up in CyberTracker
 
 * Confirm that:
   * SVG files are uploaded to your backend under **Settings → Media**
@@ -332,10 +305,6 @@ This project builds on the outstanding work of several open-source and community
 * [**Survey123**](http://survey123.arcgis.com/) – ArcGIS-native survey platform for spatial data collection
 
 Special thanks to the field teams and conservation partners who helped refine and test this system in real-world aerial survey conditions.
-
----
-
-Great! Here's a final **Section 10: Contributing**, written in Markdown:
 
 ---
 
