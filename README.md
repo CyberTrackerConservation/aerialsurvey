@@ -15,3 +15,50 @@ This repository contains everything needed to use the system:
 * The XlsForm survey, preconfigured for aerial data capture
 * Instructions for customizing specific parts of the form (e.g., observation types)
 * Setup guidance for installing the form on CyberTracker and integrating with a backend
+
+Certainly — here’s **Section 2: Features** again, this time with the list icons removed for a cleaner, more formal Markdown presentation:
+
+---
+
+## Features
+This system is purpose-built for fast, accurate aerial data collection. It combines performance-focused design with support for standardized workflows, all while operating fully offline. Key features include:
+
+### 1. Metadata Specification
+Before starting data collection, the user is prompted to enter **metadata** that is automatically attached to every observation. This includes:
+* Aircraft registration
+* Pilot and observer names
+* Protocol
+
+This ensures each dataset is tagged with essential context for quality control and reporting.
+
+### 2. Rapid Icon-Based Entry
+The observation interface uses large, icon-driven buttons to represent standard observation protocols. This allows observers to:
+* Quickly identify and tap the correct category or type
+* Minimize errors through visual recognition
+* Log observations with minimal attention diverted from the field
+* The icon layout can be customized for the specific device. This includes the number of icon columns as well as the icon sizes.
+
+> *Screenshot: (Insert screenshot of the observation entry screen here)*
+
+### 3. Instant GPS Capture
+Each observation is automatically stamped with the **current GPS location** the moment the user selects the type that was observed. This ensures positional accuracy even at high speeds.
+
+### 4. Continuous Track Recording
+
+The GPS track is logged throughout the survey. This provides a full spatial trace of the flight path, which can be used for:
+* Contextualizing observations
+* Post-flight review
+* Spatial analysis and verification
+
+The track log is attached to the "Stop" record as a ZIP file. The ZIP contains a [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) file.
+
+### 5. Edit Past Observations
+Mistakes happen—this system allows observers to review and edit the previously logged entry before the session is finalized, helping ensure data integrity without disrupting the workflow.
+
+### 6. Offline Maps
+CyberTracker supports offline maps in a variety of formats. This support is described more fully in the [CyberTracker documentation](https://cybertrackerwiki.org/xlsform/reference-manual/maps)
+
+### 7. Upload to Chosen Backend
+At the end of the survey, data can be uploaded to a backend: [KoBoToolbox](https://kobotoolbox.org), [ODK](https://getodk.org), [Survey123](http://survey123.arcgis.com/).
+
+This supports seamless reporting, export, and analysis workflows across a wide range of platforms.
