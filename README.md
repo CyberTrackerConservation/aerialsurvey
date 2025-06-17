@@ -206,3 +206,49 @@ This section describes how to make limited customizations to the form (such as u
    * All media files referenced in the form (e.g., SVG icons)
 
 ---
+
+### Part 2: Deploying the Form to KoBoToolbox
+
+Once your form has been customized and built, you can upload it to [KoBoToolbox](https://kobotoolbox.org) for hosting and data storage.
+
+1. **Sign in** to your account at [https://kobotoolbox.org](https://kobotoolbox.org). Create an account if you don’t already have one.
+2. **Create a new project**, then choose **Upload an XLSForm** when prompted.
+3. **Upload the finalized `form.xlsx`** file from the `build/` folder.
+4. **Upload media files** associated with the form:
+   * Navigate to your form's **Settings → Media** tab
+   * Upload all `.svg` and other media files found in the `build/media/` directory
+5. **Click “Deploy” or “Redeploy”** to activate the form for use in CyberTracker or other compatible clients.
+
+Once deployed, the form can be accessed and downloaded from the CyberTracker app on your mobile device.
+
+---
+
+## Field Use Workflow
+
+This section outlines how to use the system during a typical aerial survey. It assumes the CyberTracker app has already been installed and connected to your backend (see [Installation and Setup](#installation-and-setup)).
+
+### Launching the Form
+1. Open the **CyberTracker** app on your device
+2. Tap the form to launch it
+3. Tap the "New survey" button in the lower right corner
+
+You will be prompted to enter **session metadata**, such as:
+* Aircraft registration
+* Pilot name
+* Names of observers
+
+This information will be attached to all observations recorded during the session.
+
+When complete, tap the "Start survey" button in the lower right corner
+
+### Recording Observations
+Once the session begins, the app will display the **observation interface**, which includes:
+* A set of **large, icon-based buttons** grouped by category (e.g., Wildlife, Birds, Human Activity)
+* Touch-friendly layouts optimized for fast selection
+* GPS-based location capture at the moment of tap
+
+### Editing
+After the first observation, a large red button will appear in the lower right corner. This button will allow correction of the prior observation.
+
+### Completing the survey
+When the survey is complete, tap the "Stop survey" button in the top right corner of the screen.
