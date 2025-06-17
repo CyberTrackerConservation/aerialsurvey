@@ -28,7 +28,9 @@ Before starting data collection, the user is prompted to enter **metadata** that
 * Protocol
 
 This ensures each dataset is tagged with essential context for quality control and reporting.
-![Metadata entry](https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png)
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;">
+</div>
 
 ### 2. Rapid Icon-Based Entry
 The observation interface uses large, icon-driven buttons to represent standard observation protocols. This allows observers to:
