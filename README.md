@@ -73,3 +73,7 @@ CyberTracker supports offline maps in a variety of formats. This support is desc
 At the end of the survey, data can be uploaded to a backend: [KoBoToolbox](https://kobotoolbox.org), [ODK](https://getodk.org), [Survey123](http://survey123.arcgis.com/).
 
 This supports seamless reporting, export, and analysis workflows across a wide range of platforms.
+
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/complete.png" alt="Edit button" style="width: 50%;">
+</div>
