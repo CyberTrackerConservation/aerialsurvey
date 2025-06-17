@@ -1,5 +1,7 @@
 import sys
 import os
+import zlib
+import struct
 import tempfile
 import base64
 import shutil
@@ -57,6 +59,13 @@ def copy_media_files(form_path: Path, build_dir: Path):
             except Exception as e:
                 print(f"⚠️ Failed to copy {file.name}: {e}")
 
+def qt_compress(data) -> bytes:
+    compressed = zlib.compress(data)
+
+    # Prepend 4-byte big-endian uncompressed size
+    prefix = struct.pack('>I', len(data))
+    return prefix + compressed
+
 # Inject the qml files
 def process_xlsform(input_path):
     input_path = Path(input_path).resolve()
@@ -81,7 +90,7 @@ def process_xlsform(input_path):
 
     col_old = headers["bind::ct:content.qmlFile"]
     col_new = max(headers.values()) + 1
-    survey.cell(row=1, column=col_new + 1).value = "bind::ct:content.qmlBase64"
+    survey.cell(row=1, column=col_new + 1).value = "bind::ct:content.qmlBase64z"
 
     # Process rows
     for row in survey.iter_rows(min_row=2):
@@ -90,7 +99,8 @@ def process_xlsform(input_path):
             qml_file = form_dir / cell.value
             try:
                 content = qml_file.read_text(encoding="utf-8")
-                content = base64.b64encode(content.encode('utf-8')).decode('ascii')
+                content = qt_compress(content.encode('utf-8'))
+                content = base64.b64encode(content).decode('ascii')
                 row[col_new].value = content
             except Exception as e:
                 print(f"⚠️ Failed to read {qml_file}: {e}")
