@@ -29,7 +29,7 @@ Before starting data collection, the user is prompted to enter **metadata** that
 
 This ensures each dataset is tagged with essential context for quality control and reporting.
 <div style="text-align: center;">
-  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;" class="center-image">
 </div>
 
 ### 2. Rapid Icon-Based Entry
