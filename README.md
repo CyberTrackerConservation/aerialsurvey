@@ -111,12 +111,6 @@ To ensure smooth operation in demanding field conditions, this system is designe
 
 ---
 
-Understood. We'll revert **Section 4: Installation and Setup** to its original purpose — just covering installation of CyberTracker and connecting to an already-configured backend. The customization and backend setup steps will move to a new section, likely titled **Customizing and Deploying the Form** or similar.
-
-Here is the **revised Section 4: Installation and Setup**, focused only on installing CyberTracker and connecting to a backend:
-
----
-
 ## Installation and Setup
 
 If the form has already been created and deployed to a backend (e.g., KoBoToolbox, ODK, or Survey123), getting started with data collection is simple. Just install CyberTracker on your mobile device and connect to your backend account.
@@ -252,3 +246,119 @@ After the first observation, a large red button will appear in the lower right c
 
 ### Completing the survey
 When the survey is complete, tap the "Stop survey" button in the top right corner of the screen.
+
+---
+
+## FAQ / Troubleshooting
+
+This section addresses common questions and issues you may encounter when customizing the form, collecting data, or uploading results.
+
+---
+
+### The form isn’t showing up in CyberTracker. What should I do?
+
+* Make sure you have:
+  * Deployed the form on your backend (e.g. KoBoToolbox)
+  * Signed in to CyberTracker with the same backend account
+* Check for a stable internet connection during the initial sync
+* Try refreshing the form list in CyberTracker using the **Sync** tab
+
+---
+
+### I changed the `choices` sheet and now the form won’t build.
+
+* Check that:
+  * You didn’t rename or delete any columns or sheets
+  * The `list_name`, `name`, and `label` fields are all filled in
+  * You only modified allowed lists: `employee`, `observation_category`, `observation_type`
+* Refer to [XlsForm.org](https://xlsform.org) for help fixing validation errors
+
+---
+
+### My icon images don’t show up in CyberTracker.
+
+* Confirm that:
+  * SVG files are uploaded to your backend under **Settings → Media**
+  * The `media::image` column in the `choices` sheet is filled in correctly and matches the file names exactly
+* Re-run `python make.py` to rebuild the form before redeploying
+
+---
+
+### I can't upload data from CyberTracker.
+* Ensure you have an internet connection
+* Go to the **Settings** page and select the "Upload queue" option
+* If errors persist:
+  * Restart CyberTracker and try again
+
+---
+
+### Can I use this system with ODK or Survey123 instead of KoBoToolbox?
+
+Yes. While KoBoToolbox is used as an example in this documentation, the form can be uploaded to any platform that supports XlsForm. Just ensure that:
+* The backend supports media attachments (e.g. SVG files)
+* You deploy the form with all referenced media
+* You connect CyberTracker to the appropriate backend using its login option
+
+---
+
+### Can I use this on a phone?
+Technically yes, but the screen needs to be large enough to make the icons usable.
+
+---
+
+## License & Acknowledgments
+
+### License
+
+This project is released under the **MIT License**.
+
+You are free to:
+* Use this form and associated tools for any purpose
+* Modify the form to suit your project needs
+* Distribute your customized versions, with or without attribution
+
+> *Please check the license terms of CyberTracker and any backend platform (e.g., KoBoToolbox, ODK, Survey123) separately, as those are governed by their respective projects.*
+
+---
+
+### Acknowledgments
+
+This project builds on the outstanding work of several open-source and community-driven platforms:
+
+* [**CyberTracker**](https://www.cybertracker.org) – Mobile data collection system optimized for visual and rapid entry in field conditions
+* [**XlsForm.org**](https://xlsform.org) – The open standard for building survey forms in Excel
+* [**KoBoToolbox**](https://kobotoolbox.org) – Free and open-source platform for field data collection
+* [**ODK**](https://getodk.org) – A powerful open-source data collection ecosystem
+* [**Survey123**](http://survey123.arcgis.com/) – ArcGIS-native survey platform for spatial data collection
+
+Special thanks to the field teams and conservation partners who helped refine and test this system in real-world aerial survey conditions.
+
+---
+
+Great! Here's a final **Section 10: Contributing**, written in Markdown:
+
+---
+
+## Contributing
+
+We welcome contributions from users who want to improve this system or adapt it to new use cases.
+
+### Ways to Contribute
+
+* **Add support for new observation categories or layouts**
+* **Improve form validation or automation** (e.g., extending the `make.py` script)
+* **Translate the form or labels** for use in other regions or languages
+* **Share your deployment guides or use cases**
+
+### Guidelines
+
+1. Fork this repository
+2. Make your changes on a new branch
+3. Submit a pull request with a clear description of the changes
+4. If modifying the XlsForm, ensure the form builds cleanly using:
+
+   ```bash
+   python make.py
+   ```
+
+Please keep contributions focused on the core scope of the project: **rapid, icon-based data collection in aerial surveys using CyberTracker and XlsForm**.
