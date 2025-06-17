@@ -16,8 +16,6 @@ This repository contains everything needed to use the system:
 * Instructions for customizing specific parts of the form (e.g., observation types)
 * Setup guidance for installing the form on CyberTracker and integrating with a backend
 
-Certainly — here’s **Section 2: Features** again, this time with the list icons removed for a cleaner, more formal Markdown presentation:
-
 ---
 
 ## Features
@@ -30,6 +28,7 @@ Before starting data collection, the user is prompted to enter **metadata** that
 * Protocol
 
 This ensures each dataset is tagged with essential context for quality control and reporting.
+![Metadata entry](https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png)
 
 ### 2. Rapid Icon-Based Entry
 The observation interface uses large, icon-driven buttons to represent standard observation protocols. This allows observers to:
