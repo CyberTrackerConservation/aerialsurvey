@@ -40,15 +40,11 @@ The observation interface uses large, icon-driven buttons to represent standard 
 * The icon layout can be customized for the specific device. This includes the number of icon columns as well as the icon sizes.
 
 <div style="text-align: center;">
-  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect1.png" alt="Metadata entry" style="width: 50%;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect1.png" alt="Icon based design" style="width: 50%;">
 </div>
 
 ### 3. Instant GPS Capture
 Each observation is automatically stamped with the **current GPS location** the moment the user selects the type that was observed. This ensures positional accuracy even at high speeds.
-
-<div style="text-align: center;">
-  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect2.png" alt="Metadata entry" style="width: 50%;">
-</div>
 
 ### 4. Continuous Track Recording
 
@@ -65,6 +61,10 @@ The track log is attached to the "Stop" record as a ZIP file. The ZIP contains a
 
 ### 5. Edit Past Observations
 Mistakes happen—this system allows observers to review and edit the previously logged entry before the session is finalized, helping ensure data integrity without disrupting the workflow.
+
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect2.png" alt="Edit button" style="width: 50%;">
+</div>
 
 ### 6. Offline Maps
 CyberTracker supports offline maps in a variety of formats. This support is described more fully in the [CyberTracker documentation](https://cybertrackerwiki.org/xlsform/reference-manual/maps)
