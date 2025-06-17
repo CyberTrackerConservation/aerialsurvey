@@ -29,7 +29,7 @@ Before starting data collection, the user is prompted to enter **metadata** that
 
 This ensures each dataset is tagged with essential context for quality control and reporting.
 <div style="text-align: center;">
-  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;" class="center-image">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/metadata.png" alt="Metadata entry" style="width: 50%;">
 </div>
 
 ### 2. Rapid Icon-Based Entry
@@ -39,10 +39,16 @@ The observation interface uses large, icon-driven buttons to represent standard 
 * Log observations with minimal attention diverted from the field
 * The icon layout can be customized for the specific device. This includes the number of icon columns as well as the icon sizes.
 
-> *Screenshot: (Insert screenshot of the observation entry screen here)*
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect1.png" alt="Metadata entry" style="width: 50%;">
+</div>
 
 ### 3. Instant GPS Capture
 Each observation is automatically stamped with the **current GPS location** the moment the user selects the type that was observed. This ensures positional accuracy even at high speeds.
+
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect2.png" alt="Metadata entry" style="width: 50%;">
+</div>
 
 ### 4. Continuous Track Recording
 
@@ -52,6 +58,10 @@ The GPS track is logged throughout the survey. This provides a full spatial trac
 * Spatial analysis and verification
 
 The track log is attached to the "Stop" record as a ZIP file. The ZIP contains a [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) file.
+
+<div style="text-align: center;">
+  <img src="https://github.com/CyberTrackerConservation/aerialsurvey/blob/main/screenshots/collect3.png" alt="Metadata entry" style="width: 50%;">
+</div>
 
 ### 5. Edit Past Observations
 Mistakes happen—this system allows observers to review and edit the previously logged entry before the session is finalized, helping ensure data integrity without disrupting the workflow.
