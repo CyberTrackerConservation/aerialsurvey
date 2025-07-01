@@ -411,6 +411,7 @@ ColumnLayout {
             Row {
                 Layout.fillWidth: true
                 spacing: 0
+                visible: bindProtocol.value === "protocol/sample"
 
                 ButtonGroup {
                     id: buttonGroupInOut
@@ -754,7 +755,7 @@ ColumnLayout {
             errorMessage = "No measure type"
         } else if (bindMeasure.isEmpty) {
             errorMessage = "No measure"
-        } else if (bindInOut.isEmpty) {
+        } else if (bindInOut.isEmpty && bindProtocol.value === "protocol/sample") {
             errorMessage = "No in/out specified"
         } else if (bindDirection.isEmpty) {
             errorMessage = "No direction specified"
