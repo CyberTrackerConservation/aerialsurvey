@@ -129,8 +129,10 @@ ColumnLayout {
                     icon.width: Style.toolButtonSize
                     icon.height: Style.toolButtonSize
                     icon.color: h.textColor
+                    enabled: bindCategory.value !== undefined
+                    opacity: enabled ? 1.0 : 0.5
                     onClicked: {
-                        popup.open()
+                        popupSettings.open()
                     }
                 }
 
@@ -319,6 +321,7 @@ ColumnLayout {
                 gridType.model.elementUid = ""
                 gridType.model.elementUid = listElementUid
                 updateTitle()
+                root.params = updateParams()
             }
         }
 
@@ -506,16 +509,13 @@ ColumnLayout {
     }
 
     PopupBase {
-        id: popup
-
-        //width: parent.width * 0.75
+        id: popupSettings
 
         contentItem: ColumnLayout {
-            //width: popup.width
             spacing: 0
 
             Component.onCompleted: {
-                setProjectColors(popup)
+                setProjectColors(popupSettings)
             }
 
             RowLayout {
@@ -652,7 +652,7 @@ ColumnLayout {
             elementUid = bindCategory.value
         }
 
-        return elementUid === undefined ? "Ready!" : form.getElementName(elementUid)
+        return elementUid === undefined ? "Select category" : form.getElementName(elementUid)
     }
 
     function updateTitle() {
@@ -660,7 +660,7 @@ ColumnLayout {
     }
 
     function getColumnCount() {
-        return form.getGlobal("columns", root.params.columns === undefined ? 4 : root.params.columns)
+        return form.getGlobal("columns_" + bindCategory.value, root.params.columns === undefined ? 4 : root.params.columns)
     }
 
     function setColumnCount(delta) {
@@ -672,13 +672,13 @@ ColumnLayout {
             columns = 12
         }
 
-        form.setGlobal("columns", columns)
+        form.setGlobal("columns_" + bindCategory.value, columns)
 
         root.params = updateParams()
     }
 
     function getIconSize() {
-        return form.getGlobal("itemHeight", root.params.itemHeight === undefined ? 32 : root.params.itemHeight)
+        return form.getGlobal("itemHeight_" + bindCategory.value, root.params.itemHeight === undefined ? 32 : root.params.itemHeight)
     }
 
     function setIconSize(delta) {
@@ -691,13 +691,13 @@ ColumnLayout {
             itemHeight = 256
         }
 
-        form.setGlobal("itemHeight", itemHeight)
+        form.setGlobal("itemHeight_" + bindCategory.value, itemHeight)
 
         root.params = updateParams()
     }
 
     function getPadding() {
-        return form.getGlobal("padding", root.params.padding === undefined ? 4 : root.params.padding)
+        return form.getGlobal("padding_" + bindCategory.value, root.params.padding === undefined ? 4 : root.params.padding)
     }
 
     function setPadding(delta) {
@@ -709,7 +709,7 @@ ColumnLayout {
             padding = 256
         }
 
-        form.setGlobal("padding", padding)
+        form.setGlobal("padding_" + bindCategory.value, padding)
 
         root.params = updateParams()
     }
