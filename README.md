@@ -99,7 +99,11 @@ To ensure smooth operation in demanding field conditions, this system is designe
 * **Operating System:**
   * Android 9.0 (Pie) or later
   * iOS 13 or later
-
+* **Icons:** recommended convention for colors
+  * Active - #d62525ff
+  * Old - #e29b29ff
+  * Recent - 61ce63ff
+  
 > *Note: Phones are technically supported but not recommended due to smaller screen size, which may reduce usability in fast-paced field scenarios.*
 
 ---
