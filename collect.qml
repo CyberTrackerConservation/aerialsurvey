@@ -12,7 +12,6 @@ ColumnLayout {
     property string fieldUid
     property var params
 
-    property string collectRecordUid: form.getGlobal("collectRecordUid", root.recordUid)
     property bool canEdit: form.getGlobal("canEdit", false)
     property bool editing: form.getGlobal("editing", false)
 
@@ -67,7 +66,7 @@ ColumnLayout {
                 horizontalAlignment: Qt.AlignHCenter
                 clip: true
                 color: h.textColor
-                text: form.getFieldDisplayValue(root.recordUid, "mission_id") + " (edit)"
+                text: form.getFieldDisplayValue(form.rootRecordUid, "mission_id") + " (edit)"
             }
 
             ToolButton {
@@ -88,8 +87,8 @@ ColumnLayout {
             visible: !root.editing
 
             RowLayout {
-                Layout.preferredWidth: Style.toolButtonSize * 4
-                Layout.maximumWidth: Style.toolButtonSize * 4
+                Layout.preferredWidth: Style.toolButtonSize * 5
+                Layout.maximumWidth: Style.toolButtonSize * 5
                 Layout.alignment: Qt.AlignVCenter
                 Layout.fillHeight: true
                 spacing: 0
@@ -125,6 +124,16 @@ ColumnLayout {
                 }
 
                 ToolButton {
+                    icon.source: App.batteryIcon
+                    icon.width: Style.toolButtonSize
+                    icon.height: Style.toolButtonSize
+                    icon.color: h.textColor
+                    onClicked: {
+                        App.showToast(App.batteryText)
+                    }
+                }
+
+                ToolButton {
                     icon.source: "qrc:/icons/settings_outline.svg"
                     icon.width: Style.toolButtonSize
                     icon.height: Style.toolButtonSize
@@ -146,12 +155,12 @@ ColumnLayout {
                 horizontalAlignment: Qt.AlignHCenter
                 clip: true
                 color: h.textColor
-                text: form.getFieldDisplayValue(root.recordUid, "mission_id")
+                text: form.getFieldDisplayValue(form.rootRecordUid, "mission_id")
             }
 
             RowLayout {
-                Layout.preferredWidth: Style.toolButtonSize * 4
-                Layout.maximumWidth: Style.toolButtonSize * 4
+                Layout.preferredWidth: Style.toolButtonSize * 5
+                Layout.maximumWidth: Style.toolButtonSize * 5
                 Layout.alignment: Qt.AlignVCenter
                 Layout.fillHeight: true
                 spacing: 0
@@ -164,7 +173,7 @@ ColumnLayout {
                     font.pixelSize: App.settings.font12
                     radius: App.scaleByFontSize(4)
                     onClicked: {
-                        let recordUid = form.getGlobal("collectRecordUid", root.recordUid)
+                        let recordUid = form.rootRecordUid
                         let lastLocation = App.lastLocation.toMap
 
                         // Finalize the track.
@@ -188,7 +197,6 @@ ColumnLayout {
                         // Reset.
                         form.newSighting()
                         form.wizard.init(form.rootRecordUid)
-                        form.setGlobal("collectRecordUid", undefined)
                         form.saveState()
                         form.loadPages()
                     }
@@ -201,49 +209,49 @@ ColumnLayout {
     // Field bindings.
     FieldBinding {
         id: bindLocation
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "location"
     }
 
     FieldBinding {
         id: bindProtocol
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "protocol"
     }
 
     FieldBinding {
         id: bindCategory
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "observation_category"
     }
 
     FieldBinding {
         id: bindType
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "observation_type"
     }
 
     FieldBinding {
         id: bindMeasureType
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "measure_type"
     }
 
     FieldBinding {
         id: bindMeasure
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "measure"
     }
 
     FieldBinding {
         id: bindInOut
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "in_out"
     }
 
     FieldBinding {
         id: bindDirection
-        recordUid: root.collectRecordUid
+        recordUid: form.rootRecordUid
         fieldUid: "direction"
     }
 
@@ -312,7 +320,7 @@ ColumnLayout {
             Layout.preferredWidth: App.scaleByFontSize(52)
             opacity: 0.5
             topMargin: -Style.lineWidth1
-            recordUid: root.collectRecordUid
+            recordUid: form.rootRecordUid
             fieldUid: "observation_category"
             params: ({ columns: 1, lines: true, style: "IconOnly", itemHeight: App.scaleByFontSize(52) })
             onItemClicked: (elementUid) => {
@@ -329,13 +337,15 @@ ColumnLayout {
             id: gridType
             Layout.fillWidth: true
             Layout.fillHeight: true
-            recordUid: root.collectRecordUid
+            recordUid: form.rootRecordUid
             fieldUid: "observation_type"
             params: updateParams()
 
             onItemClicked: (elementUid) => {
                 // Do not set the location for edited sightings.
+                // Snap timestamp and location.
                 if (!root.editing) {
+                    form.setFieldValue(form.rootRecordUid, "datetime", App.timeManager.currentDateTimeISO())
                     bindLocation.setValue(App.lastLocation.toMap)
                 }
 
@@ -407,7 +417,7 @@ ColumnLayout {
                 id: keypad
                 Layout.fillWidth: true
                 height: App.scaleByFontSize(52) * 4
-                recordUid: root.collectRecordUid
+                recordUid: form.rootRecordUid
                 fieldUid: "measure"
             }
 
@@ -485,6 +495,37 @@ ColumnLayout {
 
             Item {
                 Layout.fillHeight: true
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                Repeater {
+                    model: [ { color: "#d62525", text: "Active" }, { color: "#e29b29", text: "Recent" }, { color: "#61ce63", text: "Old" } ]
+
+                    Row {
+                        Layout.fillWidth: true
+                        spacing: App.scaleByFontSize(4)
+
+                        Rectangle {
+                            color: modelData.color
+                            width: App.scaleByFontSize(16)
+                            height: App.scaleByFontSize(16)
+                        }
+
+                        Label {
+                            height: App.scaleByFontSize(16)
+                            Layout.alignment: Qt.AlignVCenter
+                            font.pixelSize: App.settings.font10
+                            verticalAlignment: Label.AlignVCenter
+                            text: modelData.text
+                        }                        
+                    }
+                }
+            }
+
+            Item {
+                height: App.scaleByFontSize(4)
             }
 
             Button {
@@ -730,7 +771,6 @@ ColumnLayout {
         }
 
         form.newSighting(true)
-        form.setGlobal("collectRecordUid", form.rootRecordUid)
         form.setGlobal("editing", false)
 
         form.loadPages()
@@ -745,12 +785,12 @@ ColumnLayout {
 
         // Ensure record is valid.
         let errorMessage = ""
-        if (!form.getRecordValid(root.collectRecordUid)) {
+        if (!form.getRecordValid(form.rootRecordUid)) {
             errorMessage = "Not complete"
         } else if (bindCategory.isEmpty) {
             errorMessage = "No category"
         } else if (bindType.isEmpty) {
-            errorMessage = "No type"
+            errorMessage = "No item selected"
         } else if (bindMeasureType.isEmpty) {
             errorMessage = "No measure type"
         } else if (bindMeasure.isEmpty) {
@@ -768,8 +808,7 @@ ColumnLayout {
         }
 
         // Save sighting.
-        form.setFieldValue(root.collectRecordUid, "datetime", App.timeManager.currentDateTimeISO())
-        form.setFieldValue(root.collectRecordUid, "type", "")
+        form.setFieldValue(form.rootRecordUid, "type", "")
         form.saveSighting()
         form.markSightingCompleted()
 
@@ -787,7 +826,6 @@ ColumnLayout {
         }
 
         let sightingUid = sightingListModel.get(sightingListModel.count - 1).sightingUid
-        form.setGlobal("collectRecordUid", sightingUid)
         form.setGlobal("editing", true)
 
         form.loadSighting(sightingUid)
