@@ -141,6 +141,9 @@ ColumnLayout {
                     enabled: bindCategory.value !== undefined
                     opacity: enabled ? 1.0 : 0.5
                     onClicked: {
+                        labelColumnCount.text = getColumnCount()
+                        labelIconSize.text = getIconSize()
+                        labelPadding.text = getPadding()
                         popupSettings.open()
                     }
                 }
@@ -330,6 +333,7 @@ ColumnLayout {
                 gridType.model.elementUid = listElementUid
                 updateTitle()
                 root.params = updateParams()
+                gridType.params = root.params
             }
         }
 
@@ -575,8 +579,8 @@ ColumnLayout {
                 }
 
                 Label {
+                    id: labelColumnCount
                     font.pixelSize: App.settings.font14
-                    text: getColumnCount()
                     opacity: 0.5
                 }
 
@@ -617,8 +621,8 @@ ColumnLayout {
                 }
 
                 Label {
+                    id: labelIconSize
                     font.pixelSize: App.settings.font14
-                    text: getIconSize()
                     opacity: 0.5
                 }
 
@@ -659,8 +663,8 @@ ColumnLayout {
                 }
 
                 Label {
+                    id: labelPadding
                     font.pixelSize: App.settings.font14
-                    text: getPadding()
                     opacity: 0.5
                 }
 
@@ -716,6 +720,8 @@ ColumnLayout {
         form.setGlobal("columns_" + bindCategory.value, columns)
 
         root.params = updateParams()
+        gridType.params = root.params
+        labelColumnCount.text = getColumnCount()
     }
 
     function getIconSize() {
@@ -735,6 +741,8 @@ ColumnLayout {
         form.setGlobal("itemHeight_" + bindCategory.value, itemHeight)
 
         root.params = updateParams()
+        gridType.params = root.params
+        labelIconSize.text = getIconSize()
     }
 
     function getPadding() {
@@ -753,6 +761,8 @@ ColumnLayout {
         form.setGlobal("padding_" + bindCategory.value, padding)
 
         root.params = updateParams()
+        gridType.params = root.params
+        labelPadding.text = getPadding()
     }
 
     function updateParams() {
