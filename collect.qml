@@ -12,8 +12,16 @@ ColumnLayout {
     property string fieldUid
     property var params
 
-    property bool canEdit: form.getGlobal("canEdit", false)
-    property bool editing: form.getGlobal("editing", false)
+    QtObject {
+        id: internal
+
+        property bool canEdit: form.getGlobal("canEdit", false)
+        property bool editing: form.getGlobal("editing", false)
+
+        property int columnCount: 0
+        property int iconSize: 0
+        property int padding: 0
+    }
 
     PositionSource {
         id: positionSource
@@ -46,7 +54,7 @@ ColumnLayout {
             width: parent.width
             height: parent.height
             spacing: 0
-            visible: root.editing
+            visible: internal.editing
 
             ToolButton {
                 Layout.alignment: Qt.AlignVCenter
@@ -84,7 +92,7 @@ ColumnLayout {
         RowLayout {
             width: parent.width
             spacing: 0
-            visible: !root.editing
+            visible: !internal.editing
 
             RowLayout {
                 Layout.preferredWidth: Style.toolButtonSize * 5
@@ -141,9 +149,10 @@ ColumnLayout {
                     enabled: bindCategory.value !== undefined
                     opacity: enabled ? 1.0 : 0.5
                     onClicked: {
-                        labelColumnCount.text = getColumnCount()
-                        labelIconSize.text = getIconSize()
-                        labelPadding.text = getPadding()
+                        setColumnCount(0)
+                        setIconSize(0)
+                        setPadding(0)
+
                         popupSettings.open()
                     }
                 }
@@ -332,8 +341,12 @@ ColumnLayout {
                 gridType.model.elementUid = ""
                 gridType.model.elementUid = listElementUid
                 updateTitle()
-                root.params = updateParams()
-                gridType.params = root.params
+
+                internal.columnCount = getColumnCount()
+                internal.iconSize = getIconSize()
+                internal.padding = getPadding()
+
+                gridType.params = makeParams()
             }
         }
 
@@ -343,12 +356,12 @@ ColumnLayout {
             Layout.fillHeight: true
             recordUid: form.rootRecordUid
             fieldUid: "observation_type"
-            params: updateParams()
+            params: makeParams()
 
             onItemClicked: (elementUid) => {
                 // Do not set the location for edited sightings.
                 // Snap timestamp and location.
-                if (!root.editing) {
+                if (!internal.editing) {
                     form.setFieldValue(form.rootRecordUid, "datetime", App.timeManager.currentDateTimeISO())
                     bindLocation.setValue(App.lastLocation.toMap)
                 }
@@ -489,7 +502,7 @@ ColumnLayout {
                         onClicked: {
                             bindDirection.setValue(modelData.uid)
 
-                            if (!root.editing) {
+                            if (!internal.editing) {
                                 root.saveSighting()
                             }
                         }
@@ -537,7 +550,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Material.roundedScale: Material.NotRounded
                 Material.background: Material.Red
-                visible: root.canEdit && !root.editing
+                visible: internal.canEdit && !internal.editing
                 contentItem: Text {
                     width: parent.width
                     horizontalAlignment: Qt.AlignHCenter
@@ -579,9 +592,9 @@ ColumnLayout {
                 }
 
                 Label {
-                    id: labelColumnCount
                     font.pixelSize: App.settings.font14
                     opacity: 0.5
+                    text: String(internal.columnCount)
                 }
 
                 ToolButton {
@@ -621,9 +634,9 @@ ColumnLayout {
                 }
 
                 Label {
-                    id: labelIconSize
                     font.pixelSize: App.settings.font14
                     opacity: 0.5
+                    text: String(internal.iconSize)
                 }
 
                 ToolButton {
@@ -663,9 +676,9 @@ ColumnLayout {
                 }
 
                 Label {
-                    id: labelPadding
                     font.pixelSize: App.settings.font14
                     opacity: 0.5
+                    text: String(internal.padding)
                 }
 
                 ToolButton {
@@ -705,7 +718,7 @@ ColumnLayout {
     }
 
     function getColumnCount() {
-        return form.getGlobal("columns_" + bindCategory.value, root.params.columns === undefined ? 4 : root.params.columns)
+        return form.getGlobal("columns_" + bindCategory.value, internal.columnCount === 0 ? 8 : internal.columnCount)
     }
 
     function setColumnCount(delta) {
@@ -718,18 +731,16 @@ ColumnLayout {
         }
 
         form.setGlobal("columns_" + bindCategory.value, columns)
+        internal.columnCount = columns
 
-        root.params = updateParams()
-        gridType.params = root.params
-        labelColumnCount.text = getColumnCount()
+        gridType.params = makeParams()
     }
 
     function getIconSize() {
-        return form.getGlobal("itemHeight_" + bindCategory.value, root.params.itemHeight === undefined ? 32 : root.params.itemHeight)
+        return form.getGlobal("itemHeight_" + bindCategory.value, internal.iconSize === 0 ? 64 : internal.iconSize)
     }
 
     function setIconSize(delta) {
-
         let itemHeight = getIconSize() + delta
 
         if (itemHeight < 32) {
@@ -739,14 +750,13 @@ ColumnLayout {
         }
 
         form.setGlobal("itemHeight_" + bindCategory.value, itemHeight)
+        internal.iconSize = itemHeight
 
-        root.params = updateParams()
-        gridType.params = root.params
-        labelIconSize.text = getIconSize()
+        gridType.params = makeParams()
     }
 
     function getPadding() {
-        return form.getGlobal("padding_" + bindCategory.value, root.params.padding === undefined ? 4 : root.params.padding)
+        return form.getGlobal("padding_" + bindCategory.value, internal.padding === 0 ? 4 : internal.padding)
     }
 
     function setPadding(delta) {
@@ -759,13 +769,12 @@ ColumnLayout {
         }
 
         form.setGlobal("padding_" + bindCategory.value, padding)
+        internal.padding = padding
 
-        root.params = updateParams()
-        gridType.params = root.params
-        labelPadding.text = getPadding()
+        gridType.params = makeParams()
     }
 
-    function updateParams() {
+    function makeParams() {
         let result = root.params
         result.columns = getColumnCount()
         result.itemHeight = getIconSize()
